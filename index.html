@@ -1,78 +1,423 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Chiron Bot</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e6e6ff; /* Light purple background */
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #6a4c9c; /* Purple header */
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-        }
-        main {
-            padding: 40px;
-            text-align: center;
-        }
-        .content {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            margin: 20px auto;
-        }
-        h1 {
-            font-size: 36px;
-        }
-        h2 {
-            color: #6a4c9c; /* Purple heading */
-        }
-        p {
-            font-size: 18px;
-            line-height: 1.6;
-        }
-        .btn {
-            display: inline-block;
-            background-color: #4e6ef2; /* Blue button */
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            font-size: 18px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .btn:hover {
-            background-color: #365fd2; /* Darker blue on hover */
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Light-up CSS Christmas Tree</title>
+<style>
+  :root{
+    /* Edit these variables to change colors in CSS */
+    --bg: #08121a;
+    --tree-green: #0b6b2a;
+    --tree-green-dark: #064a1b;
+    --trunk: #6b3f1a;
+
+    /* Light colors (change these) */
+    --light-color-1: #ff3b30; /* red */
+    --light-color-2: #ffcc00; /* yellow */
+    --light-color-3: #0af;    /* cyan/blue */
+    --light-color-4: #8b2aff; /* purple */
+
+    --glow-size: 18px;
+    --twinkle-speed: 2.5s;
+    --tree-width: min(420px, 70vmin);
+  }
+
+  /* page layout */
+  html,body{
+    height:100%;
+    margin:0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(180deg, rgba(12,18,24,1) 0%, rgba(4,10,14,1) 100%), var(--bg);
+    color:#eee;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    box-sizing:border-box;
+  }
+
+  .app {
+    display:flex;
+    gap:28px;
+    align-items:flex-start;
+    max-width:1200px;
+    width:100%;
+  }
+
+  /* Tree card */
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:16px;
+    padding:20px;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    flex-shrink:0;
+  }
+
+  /* SVG container */
+  .tree-wrap{
+    width: var(--tree-width);
+    aspect-ratio: 3 / 4; /* tall rectangle */
+    display:block;
+    position:relative;
+  }
+
+  svg{
+    width:100%;
+    height:100%;
+    display:block;
+    overflow:visible;
+  }
+
+  /* tree drawing */
+  .tree-body{
+    fill: url(#tree-grad);
+    stroke: rgba(0,0,0,0.25);
+    stroke-width:2;
+  }
+  .tree-shadow {
+    fill: var(--tree-green-dark);
+    opacity:0.08;
+  }
+  .trunk{ fill: var(--trunk); stroke: rgba(0,0,0,0.25); stroke-width:1.5; border-radius:6px; }
+
+  /* lights: set CSS variables for each data-color */
+  .light[data-color="1"] { --light: var(--light-color-1); }
+  .light[data-color="2"] { --light: var(--light-color-2); }
+  .light[data-color="3"] { --light: var(--light-color-3); }
+  .light[data-color="4"] { --light: var(--light-color-4); }
+
+  /* base light style */
+  .light{
+    fill: var(--light, white);
+    stroke: rgba(255,255,255,0.5);
+    stroke-width:0.6;
+    transform-origin: center;
+    filter: drop-shadow(0 0 calc(var(--glow-size) * 0.6) var(--light));
+    transition: transform 160ms linear, opacity 250ms linear;
+    opacity: 1;
+  }
+
+  /* twinkle animations - use different durations for variety */
+  .light.twinkle {
+    animation: twinkle var(--twinkle-speed) ease-in-out infinite;
+  }
+  .light.twinkle.slow { animation-duration: calc(var(--twinkle-speed) * 1.4); }
+  .light.twinkle.fast { animation-duration: calc(var(--twinkle-speed) * 0.65); }
+
+  @keyframes twinkle {
+    0%   { transform: scale(1); opacity:.95; filter: drop-shadow(0 0 calc(var(--glow-size) * 0.5) var(--light)); }
+    30%  { transform: scale(1.12); opacity:1; filter: drop-shadow(0 0 calc(var(--glow-size) * 1) var(--light)); }
+    60%  { transform: scale(.95); opacity:.88; filter: drop-shadow(0 0 calc(var(--glow-size) * 0.35) var(--light)); }
+    100% { transform: scale(1); opacity:.95; filter: drop-shadow(0 0 calc(var(--glow-size) * 0.5) var(--light)); }
+  }
+
+  /* star on top */
+  .star { fill: var(--light-color-2); filter: drop-shadow(0 0 12px var(--light-color-2)); }
+
+  /* controls column */
+  .controls{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    min-width:260px;
+  }
+
+  .controls h2{
+    margin:0 0 6px 0;
+    font-size:18px;
+  }
+
+  .palette {
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+
+  .color-swatch{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background: rgba(255,255,255,0.02);
+    padding:8px;
+    border-radius:10px;
+    width:100%;
+    justify-content:space-between;
+  }
+
+  label{
+    font-size:13px;
+    opacity:0.9;
+  }
+
+  input[type="color"]{
+    width:44px;
+    height:34px;
+    border-radius:6px;
+    border:1px solid rgba(255,255,255,0.06);
+    padding:0;
+    cursor:pointer;
+  }
+
+  .small {
+    font-size:12px;
+    opacity:0.85;
+  }
+
+  .row {
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+
+  .btn {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.04);
+    padding:8px 12px;
+    border-radius:10px;
+    cursor:pointer;
+    color:inherit;
+    font-weight:600;
+  }
+
+  .btn.ghost{
+    background:transparent;
+    border:1px dashed rgba(255,255,255,0.06);
+    font-weight:500;
+  }
+
+  .presets {
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+
+  footer.small {
+    margin-top:12px;
+    opacity:0.7;
+  }
+
+  /* responsive */
+  @media (max-width:900px){
+    .app{ flex-direction:column; align-items:center; }
+    .controls{ width:100%; max-width:520px; }
+  }
+</style>
 </head>
 <body>
+  <div class="app">
+    <div class="card tree-wrap" aria-hidden="false" aria-label="Decorated Christmas tree">
+      <!-- SVG tree: the lights are <circle> with data-color attributes -->
+      <svg viewBox="0 0 360 480" role="img" aria-label="Christmas tree with lights">
+        <defs>
+          <linearGradient id="tree-grad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="var(--tree-green)" stop-opacity="1"/>
+            <stop offset="60%" stop-color="var(--tree-green-dark)" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#023116" stop-opacity="1"/>
+          </linearGradient>
+        </defs>
 
-<header>
-    <h1>Chiron Bot</h1>
-    <p>A Helpful Mod/Security Bot</p>
-</header>
+        <!-- tree shadow (under lower branches) -->
+        <ellipse class="tree-shadow" cx="180" cy="410" rx="120" ry="18" />
 
-<main>
-    <div class="content">
-        <h2>Welcome to Chiron Bot | Bot Status: Offline | Do /help to see commands</h2>
-        <p>Chiron Bot is designed to assist in moderating and securing your community. With advanced features like automatic message filtering, banning spammers, and protecting against security threats, Chiron Bot ensures your environment stays safe and enjoyable for everyone.</p>
-        <p>Chiron Bot is the perfect tool to help keep everything running smoothly.</p>
-        <p> + Made By CT/WGQ @ Solaris </p>
-        <p>Chiron Bot is Based of Greek mythology, Chiron was a centaur, a half-man, half-horse creature, who was a teacher and healer. </p>
-        <a href="https://discord.com/oauth2/authorize?client_id=1330700812409770046&permissions=8&integration_type=0&scope=bot+applications.commands" class="btn" target="_blank">Click Me To Add The Bot</a>
+        <!-- tree stacks (three layered polygons for depth) -->
+        <polygon class="tree-body" points="180,40 60,220 300,220" />
+        <polygon class="tree-body" points="180,130 45,300 315,300" />
+        <polygon class="tree-body" points="180,230 30,380 330,380" />
+
+        <!-- trunk -->
+        <rect class="trunk" x="150" y="380" width="60" height="60" rx="6"/>
+
+        <!-- star at the top -->
+        <g transform="translate(180,32) scale(0.9)">
+          <path class="star" d="M0 -16 L4 -4 L16 -4 L6 3 L10 14 L0 7 L-10 14 L-6 3 L-16 -4 L-4 -4 Z" />
+        </g>
+
+        <!-- Lights: each circle has a data-color (1..4) and a CSS class to twinkle. -->
+        <!-- Positions chosen to sit on branches; you can add/remove lights or change data-color -->
+        <!-- Row 1 (top) -->
+        <circle class="light twinkle fast" data-color="1" cx="176" cy="92" r="6"/>
+        <circle class="light twinkle" data-color="2" cx="151" cy="120" r="6"/>
+        <circle class="light twinkle slow" data-color="3" cx="205" cy="120" r="6"/>
+
+        <!-- Row 2 -->
+        <circle class="light twinkle" data-color="4" cx="120" cy="170" r="6"/>
+        <circle class="light twinkle fast" data-color="1" cx="148" cy="170" r="6"/>
+        <circle class="light twinkle" data-color="2" cx="176" cy="170" r="6"/>
+        <circle class="light twinkle slow" data-color="3" cx="204" cy="170" r="6"/>
+        <circle class="light twinkle" data-color="4" cx="232" cy="170" r="6"/>
+
+        <!-- Row 3 -->
+        <circle class="light twinkle slow" data-color="2" cx="92" cy="230" r="6"/>
+        <circle class="light twinkle" data-color="3" cx="126" cy="230" r="6"/>
+        <circle class="light twinkle fast" data-color="1" cx="160" cy="230" r="6"/>
+        <circle class="light twinkle" data-color="4" cx="194" cy="230" r="6"/>
+        <circle class="light twinkle slow" data-color="2" cx="228" cy="230" r="6"/>
+        <circle class="light twinkle" data-color="3" cx="262" cy="230" r="6"/>
+
+        <!-- Row 4 (bottom) -->
+        <circle class="light twinkle" data-color="4" cx="70" cy="300" r="6"/>
+        <circle class="light twinkle fast" data-color="3" cx="110" cy="300" r="6"/>
+        <circle class="light twinkle slow" data-color="2" cx="150" cy="300" r="6"/>
+        <circle class="light twinkle" data-color="1" cx="190" cy="300" r="6"/>
+        <circle class="light twinkle fast" data-color="3" cx="230" cy="300" r="6"/>
+        <circle class="light twinkle" data-color="4" cx="270" cy="300" r="6"/>
+      </svg>
     </div>
-</main>
 
+    <div class="controls card">
+      <h2>Lights — change colors</h2>
+      <p class="small">You can change these four CSS variables in the stylesheet, or pick new colors below to update them live.</p>
+
+      <div class="palette" role="region" aria-label="Light color palette">
+        <div class="color-swatch">
+          <div>
+            <label for="c1">Light 1</label>
+            <div class="small">--light-color-1</div>
+          </div>
+          <input id="c1" type="color" value="#ff3b30" data-var="--light-color-1" title="Change color 1">
+        </div>
+
+        <div class="color-swatch">
+          <div>
+            <label for="c2">Light 2</label>
+            <div class="small">--light-color-2</div>
+          </div>
+          <input id="c2" type="color" value="#ffcc00" data-var="--light-color-2" title="Change color 2">
+        </div>
+
+        <div class="color-swatch">
+          <div>
+            <label for="c3">Light 3</label>
+            <div class="small">--light-color-3</div>
+          </div>
+          <input id="c3" type="color" value="#00aaff" data-var="--light-color-3" title="Change color 3">
+        </div>
+
+        <div class="color-swatch">
+          <div>
+            <label for="c4">Light 4</label>
+            <div class="small">--light-color-4</div>
+          </div>
+          <input id="c4" type="color" value="#8b2aff" data-var="--light-color-4" title="Change color 4">
+        </div>
+      </div>
+
+      <h2 style="margin-top:12px">Effects</h2>
+
+      <div class="row" style="margin-bottom:8px">
+        <label for="glow">Glow size</label>
+        <input id="glow" type="range" min="6" max="32" value="18" style="flex:1" title="Change glow size">
+      </div>
+
+      <div class="row" style="margin-bottom:8px">
+        <label for="speed">Twinkle speed</label>
+        <input id="speed" type="range" min="0.6" max="5" step="0.1" value="2.5" style="flex:1" title="Twinkle animation speed">
+      </div>
+
+      <div class="row" style="margin-bottom:12px">
+        <button class="btn" id="toggle">Turn lights off</button>
+        <button class="btn ghost" id="randomize">Randomize</button>
+      </div>
+
+      <div>
+        <div class="presets">
+          <button class="btn" data-preset="classic">Classic</button>
+          <button class="btn" data-preset="icy">Icy</button>
+          <button class="btn" data-preset="warm">Warm</button>
+          <button class="btn" data-preset="jolly">Jolly</button>
+        </div>
+      </div>
+
+      <footer class="small">Tip: To permanently change default colors, edit the <code>--light-color-*</code> variables at the top of the CSS.</footer>
+    </div>
+  </div>
+
+<script>
+  // Wiring up controls to update CSS variables live
+  const root = document.documentElement;
+  const colorInputs = document.querySelectorAll('input[type="color"][data-var]');
+  colorInputs.forEach(inp => {
+    inp.addEventListener('input', (e) => {
+      const v = e.target.value;
+      const cssVar = e.target.dataset.var;
+      root.style.setProperty(cssVar, v);
+    });
+  });
+
+  // Glow size slider
+  const glow = document.getElementById('glow');
+  glow.addEventListener('input', (e) => {
+    root.style.setProperty('--glow-size', e.target.value + 'px');
+  });
+
+  // Twinkle speed slider
+  const speed = document.getElementById('speed');
+  speed.addEventListener('input', (e) => {
+    root.style.setProperty('--twinkle-speed', e.target.value + 's');
+  });
+
+  // Toggle lights on/off
+  const toggleBtn = document.getElementById('toggle');
+  let lightsOn = true;
+  toggleBtn.addEventListener('click', () => {
+    lightsOn = !lightsOn;
+    const lights = document.querySelectorAll('.light, .star');
+    if (!lightsOn) {
+      lights.forEach(l => { l.style.opacity = 0.06; l.style.filter = 'none'; });
+      toggleBtn.textContent = 'Turn lights on';
+    } else {
+      lights.forEach(l => { l.style.opacity = ''; l.style.filter = ''; });
+      toggleBtn.textContent = 'Turn lights off';
+    }
+  });
+
+  // Randomize colors
+  function randColor(){
+    return '#' + Math.floor(Math.random()*0xFFFFFF).toString(16).padStart(6,'0');
+  }
+  document.getElementById('randomize').addEventListener('click', () => {
+    colorInputs.forEach(inp => {
+      const c = randColor();
+      inp.value = c;
+      root.style.setProperty(inp.dataset.var, c);
+    });
+  });
+
+  // Presets
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const preset = btn.dataset.preset;
+      const presets = {
+        classic: ['#ff3b30','#ffd400','#00b4ff','#ff2aff'],
+        icy:     ['#a6e3ff','#dff1ff','#9be7ff','#6de2ff'],
+        warm:    ['#ff6b6b','#ffc857','#ffd2a6','#ff9f1c'],
+        jolly:   ['#ff1f4b','#fff65e','#1fbcd3','#7b2aff']
+      };
+      const arr = presets[preset] || ['#ff3b30','#ffcc00','#00aaff','#8b2aff'];
+      colorInputs.forEach((inp,i) => {
+        inp.value = arr[i];
+        root.style.setProperty(inp.dataset.var, arr[i]);
+      });
+    });
+  });
+
+  // Accessibility: keyboard toggle via space/enter on toggle button
+  toggleBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleBtn.click();
+    }
+  });
+
+  // Optional: small random phase offsets for twinkle animations to desynchronize
+  document.querySelectorAll('.light.twinkle').forEach((el, idx) => {
+    const delay = (Math.random() * 1.2 - 0.6).toFixed(2);
+    el.style.animationDelay = delay + 's';
+  });
+</script>
 </body>
 </html>
